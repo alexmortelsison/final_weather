@@ -1,6 +1,5 @@
 import 'package:final_weather/screens.dart/loading_screen.dart';
 import 'package:final_weather/services.dart/weather.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 

@@ -1,4 +1,3 @@
-import 'package:final_weather/screens.dart/location_screen.dart';
 import 'package:flutter/material.dart';
 
 import 'screens.dart/loading_screen.dart';
