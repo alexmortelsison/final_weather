@@ -7,7 +7,9 @@ class Location {
   Future getCurrentLocation() async {
     try {
       LocationPermission permission = await Geolocator.checkPermission();
-      LocationPermission permission2 = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        await Geolocator.requestPermission();
+      }
       Position position = await Geolocator.getCurrentPosition(
           desiredAccuracy: LocationAccuracy.low);
       latitude = position.latitude;

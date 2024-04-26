@@ -13,9 +13,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-      home: LocationScreen(
-        locationWeather: null,
-      ),
+      debugShowCheckedModeBanner: false,
+      home: LoadingScreen(),
     );
   }
 }

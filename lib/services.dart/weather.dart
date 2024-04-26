@@ -84,4 +84,24 @@ class WeatherModel {
       return 'Good Evening';
     }
   }
+
+  String getWeatherCondition(int condition) {
+    if (condition < 300) {
+      return 'Thunderstorm';
+    } else if (condition < 400) {
+      return 'Drizzle';
+    } else if (condition < 600) {
+      return 'Rainy';
+    } else if (condition < 700) {
+      return 'Snowy';
+    } else if (condition < 800) {
+      return 'Hazy';
+    } else if (condition == 800) {
+      return 'Sunny';
+    } else if (condition <= 804) {
+      return 'Cloudy';
+    } else {
+      return 'Sunny';
+    }
+  }
 }

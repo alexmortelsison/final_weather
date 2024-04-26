@@ -1,3 +1,4 @@
+import 'package:final_weather/screens.dart/loading_screen.dart';
 import 'package:final_weather/services.dart/weather.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -6,7 +7,7 @@ import 'package:intl/intl.dart';
 import 'city_screen.dart';
 
 class LocationScreen extends StatefulWidget {
-  final locationWeather;
+  final dynamic locationWeather;
   const LocationScreen({super.key, required this.locationWeather});
 
   @override
@@ -19,6 +20,12 @@ class _LocationScreenState extends State<LocationScreen> {
   late int temperature;
   late String cityName;
   late String weatherMessage;
+  late double condition1;
+  late int condition;
+  late double tempMax1;
+  late double tempMin1;
+  late int tempMax;
+  late int tempMin;
 
   @override
   void initState() {
@@ -30,11 +37,23 @@ class _LocationScreenState extends State<LocationScreen> {
     setState(() {
       if (weatherData == null) {
         temperature = 0;
-        weatherMessage = "";
+        weatherMessage = "Unable to fetch data";
         cityName = "";
+        condition = 0;
+        var tempMax = 0;
+        var tempMin = 0;
         return;
-      }
+      } else {}
     });
+    double temp = weatherData['main']['temp'];
+    temperature = temp.toInt();
+    var condition1 = weatherData['weather'][0]['id'];
+    condition = condition1.toInt();
+    cityName = weatherData['name'];
+    var tempMin1 = weatherData['main']['temp_min'];
+    var tempMax1 = weatherData['main']['temp_max'];
+    tempMax = tempMax1.toInt();
+    tempMin = tempMin1.toInt();
   }
 
   @override
@@ -55,14 +74,10 @@ class _LocationScreenState extends State<LocationScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Center(
-                child: Expanded(
-                  child: weather.getWeatherIcon(
-                    800,
-                  ),
-                ),
+                child: Expanded(child: weather.getWeatherIcon(condition)),
               ),
               Text(
-                '${weather.getMessage(citytime)}, \nTokyo',
+                '${weather.getMessage(citytime)}, \n$cityName',
                 textAlign: TextAlign.center,
                 style: const TextStyle(
                   fontSize: 40.0,
@@ -73,9 +88,9 @@ class _LocationScreenState extends State<LocationScreen> {
               const SizedBox(
                 height: 5,
               ),
-              const Text(
-                '0°C | Sunny',
-                style: TextStyle(
+              Text(
+                '$temperature°C | ${weather.getWeatherCondition(condition)}',
+                style: const TextStyle(
                   fontSize: 20.0,
                   color: Colors.white,
                   fontWeight: FontWeight.w200,
@@ -272,13 +287,13 @@ class _LocationScreenState extends State<LocationScreen> {
                                         borderRadius: BorderRadius.circular(20),
                                         color: Colors.white.withOpacity(0.1),
                                       ),
-                                      child: const Column(
+                                      child: Column(
                                         mainAxisAlignment:
                                             MainAxisAlignment.center,
                                         children: [
                                           Column(
                                             children: [
-                                              Text(
+                                              const Text(
                                                 'MAX TEMP',
                                                 style: TextStyle(
                                                   color: Colors.white,
@@ -287,8 +302,8 @@ class _LocationScreenState extends State<LocationScreen> {
                                                 ),
                                               ),
                                               Text(
-                                                '0',
-                                                style: TextStyle(
+                                                '$tempMax°C',
+                                                style: const TextStyle(
                                                   color: Colors.white,
                                                   fontWeight: FontWeight.bold,
                                                   fontSize: 20,
@@ -296,12 +311,12 @@ class _LocationScreenState extends State<LocationScreen> {
                                               )
                                             ],
                                           ),
-                                          SizedBox(
+                                          const SizedBox(
                                             height: 30,
                                           ),
                                           Column(
                                             children: [
-                                              Text(
+                                              const Text(
                                                 'MIN TEMP',
                                                 style: TextStyle(
                                                   color: Colors.white,
@@ -310,8 +325,8 @@ class _LocationScreenState extends State<LocationScreen> {
                                                 ),
                                               ),
                                               Text(
-                                                "0",
-                                                style: TextStyle(
+                                                '$tempMin°C',
+                                                style: const TextStyle(
                                                   color: Colors.white,
                                                   fontWeight: FontWeight.bold,
                                                   fontSize: 20,
@@ -346,6 +361,10 @@ class _LocationScreenState extends State<LocationScreen> {
                       },
                     ),
                   );
+                  if (typedName != null) {
+                    var weatherData = await weather.getCityWeather(typedName);
+                    updateUI(weatherData);
+                  }
                 },
                 child: const Text(
                   'Enter City',
@@ -355,7 +374,12 @@ class _LocationScreenState extends State<LocationScreen> {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: IconButton(
-                  onPressed: () {},
+                  onPressed: () async {
+                    await Navigator.push(context,
+                        MaterialPageRoute(builder: (context) {
+                      return const LoadingScreen();
+                    }));
+                  },
                   icon: const Icon(
                     Icons.refresh,
                     color: Colors.white,
